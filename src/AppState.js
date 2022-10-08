@@ -5,5 +5,10 @@ export const AppState = reactive({
   user: {},
   /** @type {import('./models/Account.js').Account} */
   account: {},
-  letters: []
+  letters: [],
+  score: 0,
+  speed: 0,
+  numList: '1234567890',
+  letterList: 'qwertyuiopasdfghjklzxcvbnm',
+  specialCharList: ';-=[]|\',./!@#$%^&*()_+{}:"<>?`~'
 })

@@ -1,8 +1,7 @@
 <template>
-  <div id="typeField">
-    <span v-for="letter in letters" :key="letter">
-      {{letter}}
-    </span>
+<h1>{{score}}</h1>
+  <div id="typeField" v-for="letter in letters" :key="letter">
+      <span :id="letter.char" class="char" :style="'left: '+letter.width+'px; top: '+letter.height+'px;'">{{letter.char}}</span>
   </div>
 </template>
 
@@ -16,23 +15,27 @@ export default {
   setup() {
     onMounted(()=>{
       setInterval(()=>{
-        AppState.letters.push(letterService.getRandomLetter())
-      }, 1000)
+        letterService.setChar()
+      }, 2000)
+      setInterval(()=>{
+        letterService.moveChars()
+      }, 80)
       $(document).keypress(function(e) {
         let code = e.keyCode || e.which;
         let char = String.fromCharCode(code)
-        let index = AppState.letters.indexOf(char)
-        console.log(index)
+        let index = AppState.letters.findIndex(l => l.char == char)
         if(index >= 0){
           AppState.letters.splice(index, 1)
+          AppState.score++
         }else{
-          AppState.letters.push(letterService.getRandomLetter())
-          AppState.letters.push(letterService.getRandomLetter())
+          letterService.setChar()
+          letterService.setChar()
         }
       })
     })
     const state = reactive({
-      letters: computed(()=> AppState.letters)
+      letters: computed(()=> AppState.letters),
+      score: computed(()=> AppState.score)
     })
     return state
   }
@@ -40,5 +43,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+.char{
+  font-size: xx-large;
+  position: absolute;
+}
+h1{
+  display: flex;
+  justify-content: center;
+  filter: blur(1px);
+  transform: scale(3);
+}
 </style>
