@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div class="about">
     <button class="button-73" @click="startGame('Letter')">Play Letter Game</button>
