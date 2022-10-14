@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: 'https://dhildeb.github.io/typer/',
   plugins: [vue()],
   build: {
     outDir: 'docs',
