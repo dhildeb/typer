@@ -1,27 +1,35 @@
-import { AppState } from "../AppState"
+import { useStore } from "../Store"
 
 class LetterService {
+  store = useStore()
   getRandomLetter() {
-    let list = AppState.numList
-    if (AppState.score > 10) {
-      list += AppState.letterList
+    let list = this.store.numList
+    if (this.store.score > 10) {
+      list += this.store.letterList
     }
-    if (AppState.score > 50) {
-      list += AppState.specialCharList
+    if (this.store.score > 50) {
+      list += this.store.specialCharList
     }
     return list[Math.floor(Math.random() * list.length)]
   }
   setChar() {
+    if (this.store.letters.length > 10) {
+      this.endGame()
+    }
     let char = this.getRandomLetter()
-    AppState.letters.push({ char, height: Math.random() * window.innerHeight, width: Math.random() * window.innerWidth, direction: Math.floor(Math.random() * 4) })
+    this.store.letters.push({ char, height: Math.random() * (window.innerHeight - 50), width: Math.random() * (window.innerWidth - 50), direction: Math.floor(Math.random() * 4) })
+  }
+
+  endGame() {
+    this.store.game = 'game over'
   }
   moveChars() {
-    AppState.letters.forEach(letter => {
+    this.store.letters.forEach(letter => {
       switch (letter.direction) {
         case 0:
           letter.height++
-          if (letter.height >= window.innerHeight) {
-            letter.height = window.innerHeight - 10
+          if (letter.height >= window.innerHeight - 50) {
+            letter.height = window.innerHeight - 50
             let options = [1, 2, 3]
             letter.direction = options[Math.floor(Math.random() * 3)]
           }
@@ -29,8 +37,8 @@ class LetterService {
           break
         case 1:
           letter.height--
-          if (letter.height <= 0) {
-            letter.height = 10
+          if (letter.height <= 50) {
+            letter.height = 50
             let options = [0, 2, 3]
             letter.direction = options[Math.floor(Math.random() * 3)]
           }
@@ -38,8 +46,8 @@ class LetterService {
           break
         case 2:
           letter.width++
-          if (letter.width >= window.innerWidth) {
-            letter.width = window.innerWidth - 10
+          if (letter.width >= window.innerWidth - 50) {
+            letter.width = window.innerWidth - 50
             let options = [1, 0, 3]
             letter.direction = options[Math.floor(Math.random() * 3)]
           }
@@ -47,8 +55,8 @@ class LetterService {
           break
         case 3:
           letter.width--
-          if (letter.height <= 0) {
-            letter.width = 10
+          if (letter.width <= 50) {
+            letter.width = 50
             let options = [1, 2, 0]
             letter.direction = options[Math.floor(Math.random() * 3)]
           }

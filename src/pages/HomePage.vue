@@ -1,56 +1,40 @@
 <template>
-<h1>{{score}}</h1>
-  <div id="typeField" v-for="letter in letters" :key="letter">
-      <span :id="letter.char" class="char" :style="'left: '+letter.width+'px; top: '+letter.height+'px;'">{{letter.char}}</span>
+  <div class="about">
+    <button class="button-73" @click="startGame('Letter')">Play Letter Game</button>
+    <button class="button-73" @click="startGame('Word')">Play Word Game</button>
   </div>
 </template>
 
 <script>
-import { computed, onMounted, reactive } from "@vue/runtime-core"
-import { letterService } from '../services/LetterService'
-import { AppState } from '../AppState'
-import $ from 'jquery'
+import { useStore } from "../Store"
+import { router } from "../router"
 
 export default {
   setup() {
-    onMounted(()=>{
-      setInterval(()=>{
-        letterService.setChar()
-      }, 2000)
-      setInterval(()=>{
-        letterService.moveChars()
-      }, 80)
-      $(document).keypress(function(e) {
-        let code = e.keyCode || e.which;
-        let char = String.fromCharCode(code)
-        let index = AppState.letters.findIndex(l => l.char == char)
-        if(index >= 0){
-          AppState.letters.splice(index, 1)
-          AppState.score++
-        }else{
-          letterService.setChar()
-          letterService.setChar()
-        }
-      })
-    })
-    const state = reactive({
-      letters: computed(()=> AppState.letters),
-      score: computed(()=> AppState.score)
-    })
-    return state
+    return {
+
+    }
+  },
+  methods:{
+    startGame(name){
+      const store = useStore()
+      store.game = 'start'
+      store.letters = []
+      store.score = 0
+      router.push({name: name+'Game'})
+    }
   }
 }
 </script>
 
-<style scoped lang="scss">
-.char{
-  font-size: xx-large;
-  position: absolute;
-}
-h1{
+<style scoped>
+.about{
+  margin-top: 50vh;
   display: flex;
   justify-content: center;
-  filter: blur(1px);
-  transform: scale(3);
+  align-content: center;
+}
+.button-73{
+  margin: 15px;
 }
 </style>
