@@ -12,8 +12,8 @@ class WordService {
       method: 'GET',
       url: 'https://random-words5.p.rapidapi.com/getRandom?wordLength=' + length,
       headers: {
-        'X-RapidAPI-Key': X_API_KEY,
-        'X-RapidAPI-Host': X_API_HOST
+        'X-RapidAPI-Key': '4a7d2d866cmshc7e4ee9da718287p1320b9jsncdfd25eca8a3',
+        'X-RapidAPI-Host': 'random-words5.p.rapidapi.com'
       },
       success: function (res) {
         newWord = res
