@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive } from 'vue'
 import $ from 'jquery'
 import { useStore } from '../Store'
 import { wordService } from '../services/WordService'
@@ -36,6 +36,11 @@ export default {
       state.speedInterval = setInterval(()=>{
         wordService.moveWord()
       }, state.speed)
+    })
+    onBeforeUnmount(()=>{
+      clearInterval(state.speedInterval)
+      $(document).unbind("keypress")
+      store.typedWord = ''
     })
     const state = reactive({
       word: computed(()=> store.word),

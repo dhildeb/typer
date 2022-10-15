@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive } from "@vue/runtime-core"
+import { computed, onBeforeUnmount, onMounted, reactive } from "@vue/runtime-core"
 import { letterService } from '../services/LetterService'
 import { useStore } from '../Store'
 import $ from 'jquery'
@@ -52,9 +52,15 @@ export default {
         }
       })
     })
+    onBeforeUnmount(()=>{
+      clearInterval(state.rateInterval)
+      clearInterval(state.speedInterval)
+      $(document).unbind("keypress")
+    })
     const state = reactive({
       letters: computed(()=> store.letters),
       score: computed(()=> store.score),
+      game: computed(()=> store.game),
       speed: 100,
       rate: 2000,
       speedInterval: null,
