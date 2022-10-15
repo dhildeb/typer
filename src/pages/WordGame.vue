@@ -1,5 +1,7 @@
 <template>
-<router-link to="/" class="back">&#8592;</router-link>
+<div class="timer" :style="'width: '+(timer/30000)*100+'vw'"></div>
+<!-- <router-link to="/" class="back">&#8592;</router-link> -->
+  <h1>{{score}}</h1>
   <p class="definition">{{wordDetails.definition}} -{{wordDetails.partOfSpeech}}</p>
   <div class="about text-center">
     <div class="word button-73" :style="'left: '+wordDirection.width+'px; top: '+wordDirection.height+'px;'">
@@ -15,6 +17,14 @@ import { useStore } from '../Store'
 import { wordService } from '../services/WordService'
 
 export default {
+  watch: {
+    timer(){
+      if(this.timer <= 0){
+        clearInterval(this.timerInterval)
+        wordService.endGame()
+      }
+    }
+  },
   setup() {
     const store = useStore()
     onMounted(()=>{
@@ -33,7 +43,10 @@ export default {
       wordLength: computed(()=> store.score),
       wordDetails: computed(()=> store.wordDetails),
       wordDirection: computed(()=> store.wordDirection),
+      score: computed(()=> store.score),
       speedInterval: '',
+      timerInterval: '',
+      timer: 30000,
       speed: 10
     })
     function checkLetterTyped(char){
@@ -43,7 +56,16 @@ export default {
       }else{
         store.typedWord = ''
       }
-      wordService.checkWordCompleted()
+      if(store.typedWord.length == store.word.length){
+        if(store.score == 0){
+          state.timerInterval = setInterval(()=>{
+            state.timer -= 50
+          }, 50)
+        }else{
+          state.timer += store.word.length*100
+        }
+        wordService.completeWord()
+      }
     }
 
     return state
@@ -76,5 +98,18 @@ img {
   color: silver;
   padding: 10px;
   font-size: xx-large;
+}
+.timer{
+  background-color: silver;
+  height: 50px;
+}
+h1{
+  display: flex;
+  justify-content: center;
+  filter: blur(1px);
+  transform: scale(3);
+  top: 25vh;
+  position: absolute;
+  left: 50vw;
 }
 </style>

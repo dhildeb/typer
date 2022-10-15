@@ -1,19 +1,26 @@
 /* eslint-disable */
 <template>
   <div class="about">
-    <button class="button-73" @click="startGame('Letter')">Play Letter Game</button>
-    <button class="button-73" @click="startGame('Word')">Play Word Game</button>
+    <div class="d-flex">
+      <button class="button-73" @click="startGame('Letter')">Play Letter Game</button>
+      <span class="highscore" v-if="lettersHighscore > 0">HighScore: {{lettersHighscore}}</span>
+    </div>
+    <div class="d-flex">
+      <button class="button-73" @click="startGame('Word')">Play Word Game</button>
+      <span class="highscore" v-if="wordsHighscore > 0">HighScore: {{wordsHighscore}}</span>
+    </div>
   </div>
 </template>
 
 <script>
-import { useStore } from "../Store"
 import { router } from "../router"
+import { useStore } from "../Store"
 
 export default {
   setup() {
     return {
-
+      lettersHighscore: JSON.parse(window.localStorage.getItem('letterScore')),
+      wordsHighscore: JSON.parse(window.localStorage.getItem('wordScore'))
     }
   },
   methods:{
@@ -37,5 +44,14 @@ export default {
 }
 .button-73{
   margin: 15px;
+}
+.d-flex{
+  display: flex;
+  flex-direction: column;
+}
+.highscore{
+  font-size: x-large;
+  color: silver;
+  text-align: center;
 }
 </style>

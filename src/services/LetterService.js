@@ -1,7 +1,11 @@
 import { useStore } from "../Store"
 
 class LetterService {
-  store = useStore()
+  constructor() {
+    setTimeout(() => {
+      this.store = useStore()
+    }, 100);
+  }
   getRandomLetter() {
     let list = this.store.numList
     if (this.store.score > 10) {
@@ -22,6 +26,9 @@ class LetterService {
 
   endGame() {
     this.store.game = 'game over'
+    if (JSON.parse(window.localStorage.getItem("letterScore")) < this.store.score) {
+      window.localStorage.setItem("letterScore", this.store.score)
+    }
   }
   moveChars() {
     this.store.letters.forEach(letter => {

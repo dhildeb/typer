@@ -1,22 +1,22 @@
 import { useStore } from "../Store"
 import $ from 'jquery'
-import { X_API_KEY, X_API_HOST } from '../env'
 class WordService {
-  store = useStore()
+  constructor() {
+    setTimeout(() => {
+      this.store = useStore()
+    }, 100);
+  }
+
   async getNewWord() {
     let wordLength = Math.round(this.store.score)
-    let length = wordLength < 4 ? 4 : wordLength > 20 ? Math.round(Math.random() * 19) + 1 : wordLength
+    let length = wordLength < 4 ? 4 : wordLength > 15 ? Math.round(Math.random() * 13) + 2 : wordLength
     let newWord = '????'
 
     await $.ajax({
       method: 'GET',
-      url: 'https://random-words5.p.rapidapi.com/getRandom?wordLength=' + length,
-      headers: {
-        'X-RapidAPI-Key': '4a7d2d866cmshc7e4ee9da718287p1320b9jsncdfd25eca8a3',
-        'X-RapidAPI-Host': 'random-words5.p.rapidapi.com'
-      },
+      url: 'https://random-word-api.herokuapp.com/word?length=' + length,
       success: function (res) {
-        newWord = res
+        newWord = Array.isArray(res) ? res[0] : res
       }
     })
     this.getDefinition(newWord)
@@ -32,9 +32,9 @@ class WordService {
         wordDetails = { definition: res[0].meanings[0].definitions[0].definition, partOfSpeech: res[0].meanings[0].partOfSpeech }
       }
     })
-    this.store.wordDetails = wordDetails
+    this.store.wordDetails = wordDetails ?? 'Could not find definition'
   }
-  async checkWordCompleted() {
+  async completeWord() {
     if (this.store.typedWord.length == this.store.word.length) {
       this.store.typedWord = ''
       this.store.increaseScore()
@@ -44,6 +44,9 @@ class WordService {
 
   endGame() {
     this.store.game = 'game over'
+    if (JSON.parse(window.localStorage.getItem("wordScore")) < this.store.score) {
+      window.localStorage.setItem("wordScore", this.store.score)
+    }
   }
   moveWord() {
     if (this.store.wordDirection.y) {
@@ -67,5 +70,4 @@ class WordService {
     }
   }
 }
-
 export const wordService = new WordService()

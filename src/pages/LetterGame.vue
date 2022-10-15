@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive, watch } from "@vue/runtime-core"
+import { computed, onMounted, reactive } from "@vue/runtime-core"
 import { letterService } from '../services/LetterService'
 import { useStore } from '../Store'
 import $ from 'jquery'
@@ -43,7 +43,7 @@ export default {
         let code = e.keyCode || e.which;
         let char = String.fromCharCode(code)
         let index = store.letters.findIndex(l => l.char == char)
-        if(index >= 0){
+        if(index >= 0 && store.game != 'game over'){
           store.letters.splice(index, 1)
           store.score++
         }else{
@@ -75,5 +75,8 @@ h1{
   justify-content: center;
   filter: blur(1px);
   transform: scale(3);
+  top: 50vh;
+  position: absolute;
+  left: 50vw;
 }
 </style>
