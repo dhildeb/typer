@@ -35,11 +35,10 @@ class WordService {
     this.store.wordDetails = wordDetails ?? 'Could not find definition'
   }
   async completeWord() {
-    if (this.store.typedWord.length == this.store.word.length) {
-      this.store.typedWord = ''
-      this.store.increaseScore()
-      this.store.word = await this.getNewWord()
-    }
+    this.store.typedWord = ''
+    this.store.increaseScore()
+    this.store.word = await this.getNewWord()
+    return true
   }
 
   endGame() {

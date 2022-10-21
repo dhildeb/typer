@@ -9,6 +9,7 @@
 import { computed, onBeforeUnmount, onMounted, reactive } from "@vue/runtime-core"
 import { letterService } from '../services/LetterService'
 import { useStore } from '../Store'
+import { explodeAnimation } from '../utils/explodeAnimation'
 import $ from 'jquery'
 
 export default {
@@ -44,6 +45,7 @@ export default {
         let char = String.fromCharCode(code)
         let index = store.letters.findIndex(l => l.char == char)
         if(index >= 0 && store.game != 'game over'){
+          explodeAnimation(store.letters[index].width, store.letters[index].height)
           store.letters.splice(index, 1)
           store.score++
         }else{

@@ -3,8 +3,8 @@
 <!-- <router-link to="/" class="back">&#8592;</router-link> -->
   <h1>{{score}}</h1>
   <p class="definition">{{wordDetails.definition}} -{{wordDetails.partOfSpeech}}</p>
-  <div class="about text-center">
-    <div class="word button-73" :style="'left: '+wordDirection.width+'px; top: '+wordDirection.height+'px;'">
+  <div class="word text-center js-explode" :style="'left: '+wordDirection.width+'px; top: '+wordDirection.height+'px;'">
+    <div id="wordBtn" class="word button-73">
       <span v-for="(char, index) in word" :key="index" :class="typedWord.length > index ? 'typed' : ''">{{char}}</span>
     </div>
   </div>
@@ -15,7 +15,7 @@ import { computed, onBeforeUnmount, onMounted, reactive } from 'vue'
 import $ from 'jquery'
 import { useStore } from '../Store'
 import { wordService } from '../services/WordService'
-
+import { explodeAnimation } from '../utils/explodeAnimation'
 export default {
   watch: {
     timer(){
@@ -54,7 +54,12 @@ export default {
       timer: 30000,
       speed: 10
     })
-    function checkLetterTyped(char){
+    function setTimer(){
+      state.timerInterval = setInterval(()=>{
+        state.timer -= 50
+      }, 50)
+    }
+    async function checkLetterTyped(char){
       let neededChar = state.word[state.typedWord.length]
       if(neededChar == char){
         store.typedWord += char
@@ -63,13 +68,23 @@ export default {
       }
       if(store.typedWord.length == store.word.length){
         if(store.score == 0){
-          state.timerInterval = setInterval(()=>{
-            state.timer -= 50
-          }, 50)
+          setTimer()
         }else{
           state.timer += store.word.length*100
         }
-        wordService.completeWord()
+        if (store.typedWord.length == store.word.length) {
+          if(store.score > 0){
+            clearInterval(state.timerInterval)
+          }
+          $('#wordBtn').addClass('hidden')
+          explodeAnimation(store.wordDirection.width, store.wordDirection.height)
+          if(await wordService.completeWord()){
+            if(store.score > 1){
+              setTimer()
+            }
+            $('#wordBtn').removeClass('hidden')
+          }
+        }
       }
     }
 
@@ -116,5 +131,8 @@ h1{
   top: 25vh;
   position: absolute;
   left: 50vw;
+}
+.hidden{
+  display: none;
 }
 </style>
